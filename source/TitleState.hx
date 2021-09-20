@@ -62,9 +62,9 @@ class TitleState extends MusicBeatState
 			if(folders.length > 0) {
 				polymod.Polymod.init({modRoot: "mods", dirs: folders});
 			}
-		}*/
+		}
 		//Gonna finish this later, probably
-		#end
+		#end*/
 		FlxG.game.focusLostFramerate = 60;
 		FlxG.sound.muteKeys = muteKeys;
 		FlxG.sound.volumeDownKeys = volumeDownKeys;
