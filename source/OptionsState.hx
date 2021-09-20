@@ -30,7 +30,7 @@ using StringTools;
 // TO DO: Redo the menu creation system for not being as dumb
 class OptionsState extends MusicBeatState
 {
-	var options:Array<String> = ['Notes', 'Controls', 'Preferences'];
+	var options:Array<String> = ['Notes', 'Controls', 'Preferences', 'Controls Android'];
 	private var grpOptions:FlxTypedGroup<Alphabet>;
 	private static var curSelected:Int = 0;
 	public static var menuBG:FlxSprite;
@@ -59,6 +59,10 @@ class OptionsState extends MusicBeatState
 			grpOptions.add(optionText);
 		}
 		changeSelection();
+
+		#if mobileC
+		addVirtualPad(FULL, A_B);
+		#end
 
 		super.create();
 	}
@@ -98,6 +102,9 @@ class OptionsState extends MusicBeatState
 
 				case 'Preferences':
 					openSubState(new PreferencesSubstate());
+
+			    case 'Controls Android':
+					MusicBeatState.switchState(new options.CustomControlsState());
 			}
 		}
 	}
@@ -180,6 +187,11 @@ class NotesSubstate extends MusicBeatSubstate
 		hsvText = new Alphabet(0, 0, "Hue    Saturation  Brightness", false, false, 0, 0.65);
 		add(hsvText);
 		changeSelection();
+
+		#if mobileC
+		addVirtualPad(FULL, A_B);
+		#end
+
 	}
 
 	var changingNote:Bool = false;
@@ -455,6 +467,10 @@ class ControlsSubstate extends MusicBeatSubstate {
 			}
 		}
 		changeSelection();
+		
+		#if mobileC
+		addVirtualPad(FULL, A_B);
+		#end
 	}
 
 	var leaving:Bool = false;

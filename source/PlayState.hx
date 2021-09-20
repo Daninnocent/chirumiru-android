@@ -45,6 +45,7 @@ import openfl.display.BlendMode;
 import openfl.display.StageQuality;
 import openfl.filters.ShaderFilter;
 import openfl.media.Video;
+import ui.Mobilecontrols;
 
 import Achievements;
 import openfl.utils.Assets as OpenFlAssets;
@@ -148,6 +149,7 @@ class PlayState extends MusicBeatState
 
 	var botplaySine:Float = 0;
 	var botplayTxt:FlxText;
+	var daninnocentTxt:FlxText;
 
 	public var iconP1:HealthIcon;
 	public var iconP2:HealthIcon;
@@ -234,6 +236,10 @@ class PlayState extends MusicBeatState
 
 	var chiritexttop:FlxSprite;
 	var chiritextbottom:FlxSprite;
+
+	#if mobileC
+	var mcontrols:Mobilecontrols; 
+	#end
 
 	override public function create()
 	{
@@ -861,6 +867,12 @@ class PlayState extends MusicBeatState
 			botplayTxt.y = timeBarBG.y - 78;
 		}
 
+		daninnocentTxt = new FlxText(876, 648, 348);
+        daninnocentTxt.text = "PORTED BY DANINNOCENT";
+        daninnocentTxt.setFormat(Paths.font("vcr.ttf"), 30, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
+        daninnocentTxt.scrollFactor.set();
+        add(daninnocentTxt);
+
 		strumLineNotes.cameras = [camHUD];
 		grpNoteSplashes.cameras = [camHUD];
 		notes.cameras = [camHUD];
@@ -874,16 +886,40 @@ class PlayState extends MusicBeatState
 		timeBarBG.cameras = [camHUD];
 		timeTxt.cameras = [camHUD];
 		doof.cameras = [camHUD];
+		daninnocentTxt.cameras = [camHUD];
 
 		if (storyDifficulty >= 1)
-			{
-				FlxG.save.data.ghostTapping = false;
-				ClientPrefs.ghostTapping = false;
-				healthBar.visible = false;
-				healthBarBG.visible = false;
-				iconP1.visible = false;
-				iconP2.visible = false;
-			}
+		{
+			FlxG.save.data.ghostTapping = false;
+			ClientPrefs.ghostTapping = false;
+			healthBar.visible = false;
+			healthBarBG.visible = false;
+			iconP1.visible = false;
+			iconP2.visible = false;
+		}
+
+		#if mobileC
+		mcontrols = new Mobilecontrols();
+		switch (mcontrols.mode)
+		{
+			case VIRTUALPAD_RIGHT | VIRTUALPAD_LEFT | VIRTUALPAD_CUSTOM:
+				controls.setVirtualPad(mcontrols._virtualPad, FULL, NONE);
+			case HITBOX:
+				controls.setHitBox(mcontrols._hitbox);
+			default:
+		}
+		trackedinputs = controls.trackedinputs;
+		controls.trackedinputs = [];
+
+		var camcontrol = new FlxCamera();
+		FlxG.cameras.add(camcontrol);
+		camcontrol.bgColor.alpha = 0;
+		mcontrols.cameras = [camcontrol];
+
+		mcontrols.visible = false;
+
+		add(mcontrols);
+	    #end
 
 
 		// if (SONG.song == 'South')
@@ -1150,6 +1186,10 @@ class PlayState extends MusicBeatState
 
 	public function startCountdown():Void
 	{
+		#if mobileC
+		mcontrols.visible = true;
+		#end
+
 		if(startedCountdown) {
 			return;
 		}
@@ -2730,6 +2770,10 @@ class PlayState extends MusicBeatState
 	var transitioning = false;
 	function endSong():Void
 	{
+		#if mobileC
+		mcontrols.visible = false;
+		#end
+
 		timeBarBG.visible = false;
 		timeBar.visible = false;
 		timeTxt.visible = false;
